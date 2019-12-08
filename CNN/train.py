@@ -10,6 +10,8 @@ from tensorflow.keras.utils import to_categorical
 np.set_printoptions(threshold=np.inf)
 IMG_SHAPE = 28
 OUTSIZE = 36
+Samplesize = 1100
+TestS = 55
 
 class CNN(object):
     def __init__(self):
@@ -36,7 +38,7 @@ class CNN(object):
 class DataSource(object):
     def __init__(self):
         data_path = os.path.abspath(os.path.dirname(
-            __file__)) + '/../ABds.npz'
+            __file__)) + '/../exchar74kds.npz'
 
         data = np.load(data_path)
         train_images = data['traindata']
@@ -44,8 +46,8 @@ class DataSource(object):
         train_labels = data['trainlabel']
         test_labels = data['testlabel']
 
-        train_images  = train_images.reshape((36*50,28,28,1))
-        test_images = test_images.reshape((36*5,28,28,1))
+        train_images  = train_images.reshape((36*Samplesize,28,28,1))
+        test_images = test_images.reshape((36*TestS,28,28,1))
 
         train_labels = to_categorical(train_labels)
         test_labels = to_categorical(test_labels)
@@ -81,7 +83,7 @@ class Train:
 
         test_loss, test_acc = self.cnn.model.evaluate(self.data.test_images, self.data.test_labels)
         print("准确率: %.4f，共测试了%d张图片 " % (test_acc, len(self.data.test_labels)))
-        self.cnn.model.save('./model/char74k_cnn.h5')
+        self.cnn.model.save('./model/exchar74k_cnn.h5')
 
 
 if __name__ == "__main__":

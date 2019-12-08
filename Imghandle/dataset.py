@@ -2,9 +2,12 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import cv2 as cv
 import numpy as np
+import random
 
 np.set_printoptions(threshold=np.inf)
 IMG_SHAPE = 28
+Samplesize = 1100
+TestS = 55
 samplelist = ["Sample001","Sample002","Sample003","Sample004","Sample005","Sample006","Sample007","Sample008",
               "Sample009","Sample010","Sample011","Sample012","Sample013","Sample014","Sample015","Sample016",
               "Sample017","Sample018","Sample019","Sample020","Sample021","Sample022","Sample023","Sample024",
@@ -24,13 +27,15 @@ def gettrainimg():
     filepath = "C:/Users/JarvisZhang/Desktop/Img/"
     path = os.listdir(filepath)
     cnt = 0
-    imgarray = np.zeros((len(samplelist)*50,IMG_SHAPE,IMG_SHAPE))
+    imgarray = np.zeros((len(samplelist)*Samplesize,IMG_SHAPE,IMG_SHAPE))
     for eachpath in path:
         #choose
         if eachpath not in samplelist:
             continue
         child =  os.path.join("%s%s" %(filepath,eachpath))
-        for filename in os.listdir(child)[0:50]:
+        for filename in os.listdir(child):
+            if filename in testimgname:
+                continue
             img = cv.imread(os.path.join("%s%s/%s" % (filepath, eachpath, filename)))
             img = local_threshold(img)
             imgarray[cnt] = np.array(img)
@@ -39,10 +44,10 @@ def gettrainimg():
     return imgarray
 
 def gettrainlabel():
-    labelarray = np.zeros((len(samplelist)*50))
+    labelarray = np.zeros((len(samplelist)*Samplesize))
     cnt = 0
     for i in range(36):
-       for j in range(50):
+       for j in range(Samplesize):
            labelarray[cnt] = i
            cnt = cnt + 1
     return labelarray
@@ -52,34 +57,39 @@ def gettestimg():
     filepath = "C:/Users/JarvisZhang/Desktop/Img/"
     path = os.listdir(filepath)
     cnt = 0
-    imgarray = np.zeros((5*len(samplelist), IMG_SHAPE, IMG_SHAPE))
+    imgarray = np.zeros((TestS*len(samplelist), IMG_SHAPE, IMG_SHAPE))
     for eachpath in path:
         # choose
         if eachpath  not in samplelist:
             continue
         child = os.path.join("%s%s" % (filepath, eachpath))
-        for filename in os.listdir(child)[50:55]:
-            img = cv.imread(os.path.join("%s%s/%s" % (filepath, eachpath, filename)))
+        childpath = os.listdir(child)
+        for index in range(TestS):
+            while True:
+                num = random.randint(0,Samplesize-1)
+                if childpath[num] not in testimgname:
+                    testimgname.append(childpath[num])
+                    break
+            img = cv.imread(os.path.join("%s%s/%s" % (filepath, eachpath, childpath[num])))
             img = local_threshold(img)
             imgarray[cnt] = np.array(img)
             cnt = cnt + 1
-            print(filename)
+            print(childpath[num])
     return imgarray
 
 def gettestlabel():
-    labelarray = np.zeros((len(samplelist) * 5))
+    labelarray = np.zeros((len(samplelist) * TestS))
     cnt = 0
     for i in range(36):
-        for j in range(5):
+        for j in range(TestS):
             labelarray[cnt] = i
             cnt = cnt + 1
     return labelarray
 
 if __name__ == '__main__':
-    imglist = gettrainimg()
-    labellist = gettrainlabel()
-    labellist.astype(int)
+    testimgname = []
     testimglist = gettestimg()
     testlabellist = gettestlabel()
-    testlabellist.astype(int)
-    np.savez("../ABds.npz",traindata = imglist, trainlabel  = labellist,testdata = testimglist,testlabel = testlabellist)
+    imglist = gettrainimg()
+    labellist = gettrainlabel()
+    np.savez("../exchar74kds.npz",traindata = imglist, trainlabel  = labellist,testdata = testimglist,testlabel = testlabellist)
