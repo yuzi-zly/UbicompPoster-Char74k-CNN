@@ -9,7 +9,7 @@ OUTSIZE = 2
 
 def ABds():
     data_path = os.path.abspath(os.path.dirname(
-        __file__)) + '/../char74kds.npz'
+        __file__)) + '/../combined.npz'
 
     data = np.load(data_path)
     train_images = data['traindata']
@@ -19,7 +19,8 @@ def ABds():
 
     train_images, test_images = train_images/255.0, test_images/255.0
 
-    print(train_labels[0])
+    print(train_images.shape)
+    print(test_images.shape)
 
 if __name__ == "__main__":
     ABds()

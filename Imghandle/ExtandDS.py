@@ -25,20 +25,25 @@ def Rotateandsave(p):
     for eachimg in path:
         img = cv.imread(os.path.join("%s/%s" % (filepath, eachimg)))
 
-        img10 = rotate(img, 10)
+        img5 = rotate(img, 5)
+        cv.imwrite(os.path.join("%s/(5)-%s" % (filepath, eachimg)), img5)
+        imgn5 = rotate(img, -5)
+        cv.imwrite(os.path.join("%s/(5-)-%s" % (filepath, eachimg)), imgn5)
+
+        img10 = rotate(img,10)
         cv.imwrite(os.path.join("%s/(10)-%s" % (filepath, eachimg)), img10)
-        imgn10 = rotate(img, -10)
-        cv.imwrite(os.path.join("%s/(-10)-%s" % (filepath, eachimg)), imgn10)
+        imgn10 = rotate(img,-10)
+        cv.imwrite(os.path.join("%s/(10-)-%s" % (filepath, eachimg)), imgn10)
 
         img15 = rotate(img,15)
         cv.imwrite(os.path.join("%s/(15)-%s" % (filepath, eachimg)), img15)
         imgn15 = rotate(img,-15)
-        cv.imwrite(os.path.join("%s/(-15)-%s" % (filepath, eachimg)), imgn15)
+        cv.imwrite(os.path.join("%s/(15-)-%s" % (filepath, eachimg)), imgn15)
 
-        img20 = rotate(img,20)
+        img20 = rotate(img, 20)
         cv.imwrite(os.path.join("%s/(20)-%s" % (filepath, eachimg)), img20)
-        imgn20 = rotate(img,-20)
-        cv.imwrite(os.path.join("%s/(-20)-%s" % (filepath, eachimg)), imgn20)
+        imgn20 = rotate(img, -20)
+        cv.imwrite(os.path.join("%s/(20-)-%s" % (filepath, eachimg)), imgn20)
 
 def RC(img,type):
     if type == 'H':
@@ -53,6 +58,8 @@ def RCandsave(p):
     filepath = "C:/Users/JarvisZhang/Desktop/Img/" + p
     path = os.listdir(filepath)
     for eachimg in path:
+        if eachimg[1:3] == '15' or eachimg[1:3] == '20':
+            continue
         img = cv.imread(os.path.join("%s/%s" % (filepath, eachimg)))
         img1 = RC(img,'H')
         cv.imwrite(os.path.join("%s/(H)-%s" % (filepath, eachimg)), img1)
